@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+        <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.min.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" type="text/css">
+
+        <style>
+         body {
+             padding-top: 80px;
+         }
+        </style>
+
+        <title>Bhav Browse</title>
+    </head>
+
+    <body>
+        <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+            <div class="container">
+                <a href="../" class="navbar-brand">Bhav Browse</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <table id="symbols" class="display">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+
+                        <th>Code</th>
+
+                        <th>Open</th>
+
+                        <th>High</th>
+
+                        <th>Low</th>
+
+                        <th>Close</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <script>
+              (function() {
+                  var query = 'a';
+                  var prev_query = 'a';
+
+                  var table= $('#symbols')
+                      .DataTable( {
+                          "ajax": {
+                              "url": "/bhavdata?query=" + query,
+                              "dataSrc": "data",
+                          }
+                      });
+
+                  $('input').keyup(function(e) {
+                      query=$('input').val();
+                      if (query.length == 1 && query != prev_query) {
+                          var dt = $('#symbols').dataTable();
+                          dt.fnClearTable();
+
+                          var url = "/bhavdata?query=" + query;
+                          $.getJSON(url, function (json) {
+                              dt.fnAddData(json.data);
+                              dt.fnDraw();
+                          });
+
+                          prev_query = query;
+                      }
+                  });
+              })();
+        </script>
+    </body>
+</html>
